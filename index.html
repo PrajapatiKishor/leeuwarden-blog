@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Leeuwarden 2026: A Week in Friesland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #FEFCF8;
+  color: #333;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 60px 2rem 40px;
+  border-bottom: 1px solid #EDE8DF;
+}
+.site-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #C07B4A;
+  margin-bottom: 1.2rem;
+}
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 700;
+  color: #1E1E1E;
+  line-height: 1.15;
+  margin-bottom: 0.8rem;
+}
+header h1 em { font-style: italic; color: #C07B4A; }
+header p {
+  font-size: 1rem;
+  color: #888;
+  max-width: 480px;
+  margin: 0 auto 2rem;
+}
+.header-pills {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  background: #F2EDE4;
+  color: #666;
+}
+.pill.highlight { background: #C07B4A; color: #fff; }
+
+/* ── TABS ── */
+.tab-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 2rem 1.5rem 0;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.tab-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.55rem 1.2rem;
+  border-radius: 25px;
+  border: 1.5px solid #E0D8CE;
+  background: transparent;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.tab-btn:hover { border-color: #C07B4A; color: #C07B4A; }
+.tab-btn.active { background: #C07B4A; border-color: #C07B4A; color: #fff; }
+
+/* ── PANELS ── */
+.panel-wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 5rem;
+}
+.day-panel { display: none; }
+.day-panel.active {
+  display: block;
+  animation: fadeUp 0.4s ease forwards;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.day-kicker {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C07B4A;
+  margin-bottom: 0.5rem;
+}
+.day-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1E1E1E;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.day-heading em { font-style: italic; font-weight: 400; color: #555; }
+.day-sub {
+  font-size: 0.88rem;
+  color: #AAA;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #EDE8DF;
+}
+
+/* ── PHOTO GRIDS ── */
+.photo-row {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.4rem 0;
+}
+.photo-row.one   { grid-template-columns: 1fr; }
+.photo-row.two   { grid-template-columns: 1fr 1fr; }
+.photo-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.photo-row.four  { grid-template-columns: 1fr 1fr; }
+
+.photo-slot {
+  background: #F5F0E8;
+  border-radius: 10px;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  position: relative;
+}
+.photo-slot.tall { aspect-ratio: 3/4; }
+.photo-slot img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+}
+.photo-slot:hover img { transform: scale(1.03); }
+
+/* Placeholder style (for slots without photos) */
+.photo-slot.empty {
+  border: 1.5px dashed #D8CEBF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.photo-slot.empty .cam { font-size: 1.4rem; opacity: 0.3; }
+.photo-slot.empty .slot-name {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #AAA;
+  text-align: center;
+  line-height: 1.4;
+  padding: 0 0.5rem;
+}
+
+/* ── BODY TEXT ── */
+.body-text { margin: 1.4rem 0; }
+.body-text p {
+  font-size: 0.97rem;
+  color: #444;
+  line-height: 1.9;
+  margin-bottom: 1rem;
+}
+.body-text p:last-child { margin-bottom: 0; }
+
+/* ── QUOTE ── */
+.quote {
+  border-left: 3px solid #C07B4A;
+  padding: 0.8rem 1.2rem;
+  margin: 1.4rem 0;
+  background: #FDF6EE;
+  border-radius: 0 8px 8px 0;
+}
+.quote p {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C07B4A;
+  margin: 1.8rem 0 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #EDE8DF;
+}
+
+/* ── EVENT LIST ── */
+.event-list { margin: 1rem 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.event-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  background: #FBF8F3;
+  border: 1px solid #EDE8DF;
+  border-radius: 10px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.event-item:hover { border-color: #D8B08A; transform: translateX(3px); }
+.event-emoji { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+.event-title { font-weight: 600; font-size: 0.88rem; color: #222; margin-bottom: 0.15rem; }
+.event-desc { font-size: 0.82rem; color: #888; line-height: 1.5; }
+
+/* ── TAGS ── */
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.6rem; }
+.tag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  background: #F2EDE4;
+  color: #999;
+  transition: all 0.2s;
+  cursor: default;
+}
+.tag:hover { background: #F0E0D0; color: #C07B4A; }
+
+/* ── NAV ── */
+.day-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #EDE8DF;
+}
+.nav-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 25px;
+  border: 1.5px solid #E0D8CE;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-btn:hover { border-color: #C07B4A; color: #C07B4A; }
+.nav-btn.next { background: #C07B4A; border-color: #C07B4A; color: #fff; }
+.nav-btn.next:hover { background: #B06A3A; }
+.nav-btn:disabled { opacity: 0.25; pointer-events: none; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #EDE8DF;
+  font-size: 0.78rem;
+  color: #BBB;
+}
+footer strong { color: #C07B4A; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 550px) {
+  .photo-row.three { grid-template-columns: 1fr 1fr; }
+  .photo-row.four  { grid-template-columns: 1fr 1fr; }
+  .day-heading { font-size: 1.6rem; }
+  header h1 { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="site-tag">Howest × NHL Stenden · Exchange 2026</span>
+  <h1>A Week in <em>Leeuwarden</em></h1>
+  <p>Five days at NHL Stenden, exploring cybersecurity, AI and Dutch culture, as experienced by students from Howest Hogeschool in Bruges.</p>
+  <div class="header-pills">
+    <span class="pill highlight">📍 Leeuwarden, Netherlands</span>
+    <span class="pill">🗓 March 9–13, 2026</span>
+    <span class="pill">🎓 NHL Stenden</span>
+    <span class="pill">🇧🇪 Howest Hogeschool, Bruges</span>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="0">✈️ Day 1 · Arrival</button>
+  <button class="tab-btn" data-tab="1">🏫 Day 2 · Campus</button>
+  <button class="tab-btn" data-tab="2">🤖 Day 3 · AI & City</button>
+  <button class="tab-btn" data-tab="3">🔐 Day 4 · Security</button>
+  <button class="tab-btn" data-tab="4">🚂 Day 5 · Home</button>
+</nav>
+
+<div class="panel-wrap">
+
+  <!-- ── DAY 1 ── -->
+  <div class="day-panel active" id="p0">
+    <p class="day-kicker">Monday · 9 March 2026</p>
+    <h2 class="day-heading">From Bruges <em>to Friesland</em></h2>
+    <p class="day-sub">A long train ride north, and a first glimpse of a city we'd never visited before.</p>
+
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="images/day1-street.jpeg" alt="Leeuwarden city centre, Grand Café Walrus and bicycles"/>
+      </div>
+      <div class="photo-slot">
+        <img src="images/day1-city.jpeg" alt="Leeuwarden canals and historic boats"/>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>Our journey started at Bruges station. A train across the flat, windmill-dotted Dutch landscape brought us to Leeuwarden by early evening. The capital of Friesland and, as we quickly discovered, a city full of quiet surprises.</p>
+      <div class="quote"><p>"Canals, historic sailing boats, old town charm, and a thick foggy atmosphere that made everything feel cinematic on arrival night."</p></div>
+      <p>We checked into our accommodation, took a short walk around the city centre and called it an early night. Tomorrow, the real programme would begin.</p>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Travel</span>
+      <span class="tag">Bruges → Leeuwarden</span>
+      <span class="tag">Friesland</span>
+      <span class="tag">Day 1</span>
+    </div>
+    <div class="day-nav">
+      <button class="nav-btn" disabled>← Previous</button>
+      <button class="nav-btn next" data-goto="1">Day 2 →</button>
+    </div>
+  </div>
+
+  <!-- ── DAY 2 ── -->
+  <div class="day-panel" id="p1">
+    <p class="day-kicker">Tuesday · 10 March 2026</p>
+    <h2 class="day-heading">Welcome to <em>NHL Stenden</em></h2>
+    <p class="day-sub">A full day of guest lectures, a campus tour, and an evening cooking dinner together in Leeuwarden.</p>
+
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="images/day2-campus.jpeg" alt="NHL Stenden building with colourful mural"/>
+      </div>
+      <div class="photo-slot">
+        <img src="images/day2-atrium.jpeg" alt="NHL Stenden campus atrium, open space with plants and seating"/>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>Our first day at NHL Stenden started at 9 am. We were warmly welcomed with hot coffee and tasty local Frisian desserts, <em>oranjekoek</em>, a sweet treat we hadn't come across before. A great way to start a day.</p>
+      <p>After the welcome, the first presentation began. We learned how the programme was structured, what we'd be doing each day, and got acquainted with the programme leaders. The main topic was internationalisation, covering the different types of international students, how they adapt to studying abroad, and how the experience shapes them. The most entertaining part was placing yourself into one of the categories and recognising truths you hadn't consciously thought about before.</p>
+    </div>
+
+    <p class="section-label">Digital Security in Your Pocket</p>
+    <div class="photo-row one">
+      <div class="photo-slot" style="aspect-ratio:16/8;">
+        <img src="images/day2-passport.jpeg" alt="Toby Zeldenrust, Digital Security in Your Pocket lecture slide"/>
+      </div>
+    </div>
+    <div class="body-text">
+      <p>The second presentation revealed the sacred secrets of digital passports. Toby Zeldenrust explained the cryptography behind the digital chips and shared some genuinely curious facts about international passports. It was fascinating to learn how authentication and digital signatures actually work, a layer of technology most of us carry without ever thinking about.</p>
+      <div class="quote"><p>"Your passport is one of the most sophisticated security devices you own, and it fits in your pocket."</p></div>
+    </div>
+
+    <p class="section-label">Lunch, Cooked by Students</p>
+    <div class="body-text">
+      <p>At noon, we headed to the canteen, and what a surprise it was. NHL Stenden offered an impressive range of dishes, and what made it even more special was that all the meals were prepared by students from the hotel management programme. The food was genuinely amazing. The true <em>repast</em>.</p>
+    </div>
+
+    <div class="body-text">
+      <p>The third presentation came from ING Bank employees, who walked us through their secure development practices, deployment pipelines, and general security strategy. We had no idea how globally spread ING actually is. They have a branch in Australia. Imagine coordinating security across that many time zones.</p>
+      <p>Afterwards we went on a campus tour, visiting various facilities including the IT department. The staff had prepared cookies for the visit, delicious ones, as it happens. The tour was brief, as the department doesn't specialise in cybersecurity, but the campus itself was impressive: open, modern, and constantly buzzing.</p>
+    </div>
+
+    <p class="section-label">Security Governance & NIS2</p>
+    <div class="photo-row one">
+      <div class="photo-slot" style="aspect-ratio:16/8;">
+        <img src="images/day2-nis2.jpeg" alt="NIS2 directive presentation slide"/>
+      </div>
+    </div>
+    <div class="body-text">
+      <p>The last presentation of the day covered security governance and strategy. NHL Stenden shared their roadmap for implementing the NIS2 directive, covering risk management, supply chain security, board accountability, and security investments. A lot to take in, but a fitting way to close a packed day.</p>
+      <p>We wrapped up around 5 pm. The evening was free. Students split into their own groups and went their separate ways. Our group headed home, cooked a proper dinner together, and spent the evening chatting about the day and settling into life in Leeuwarden.</p>
+    </div>
+
+    <p class="section-label">Around the Campus</p>
+    <div class="photo-row one">
+      <div class="photo-slot" style="aspect-ratio:16/7;">
+        <img src="images/day2-mural.jpeg" alt="Street art mural near NHL Stenden, Reading Unlocks"/>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">NHL Stenden</span>
+      <span class="tag">Digital Passports</span>
+      <span class="tag">ING Bank</span>
+      <span class="tag">NIS2 Directive</span>
+      <span class="tag">Campus Tour</span>
+      <span class="tag">Oranjekoek</span>
+    </div>
+    <div class="day-nav">
+      <button class="nav-btn" data-goto="0">← Day 1</button>
+      <button class="nav-btn next" data-goto="2">Day 3 →</button>
+    </div>
+  </div>
+
+  <!-- ── DAY 3 ── -->
+  <div class="day-panel" id="p2">
+    <p class="day-kicker">Wednesday · 11 March 2026</p>
+    <h2 class="day-heading">AI, Teams <em>& the City</em></h2>
+    <p class="day-sub">AI Experience Centre, a team workshop, intercultural session and a street art tour through Leeuwarden.</p>
+
+    <p class="section-label">AI Experience Centre</p>
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="images/day3-ai.jpeg" alt="AI Experience Centre, I'm A.I. NHL Stenden demo"/>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>Day 3 started around 10 AM. We gathered in front of the AI Center, located close to the main entrance of one of the campus buildings, and once everyone arrived we were given a tour of the AI lab. This was one of the most interesting parts of the whole week, because it showed how artificial intelligence actually gets used in real-life situations.</p>
+      <p>The first thing we saw was a camera connected to a screen, analysing people in real time and estimating characteristics like gender, emotion and age. It was striking how instantly the system could read information from facial expressions. Next to it was a large touchscreen with a keyboard, running an AI chatbot built by NHL Stenden students themselves, a nice example of students putting the technology to work.</p>
+      <p>Another setup used a camera that took photos every minute or two, then generated a random theme and transformed the person's appearance, showing how you might look in a different historical period or artistic style. The lab was also full of 3D printed objects: tables, flowers, and a wavy chair shaped to follow the human spine that turned out to be surprisingly comfortable. Most of these were tied to the nearby 3D printing facilities.</p>
+      <p>One demonstration that stuck with us was a scanner that used machine learning to inspect objects. The example was a flower model: the AI had been trained on many images of a perfect flower until it learned the correct pattern, and could then spot whether a flower was missing a leaf or had an unusual shape. The presenter explained this kind of system is used for quality control in production environments. An insect detection system rounded out the demos, another very practical use of the technology.</p>
+    </div>
+
+    <p class="section-label">Team Activities</p>
+    <div class="photo-row one">
+      <div class="photo-slot" style="aspect-ratio:16/8;">
+        <img src="images/day3-workshop.jpeg" alt="Intercultural workshop at NHL Stenden"/>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>After the AI lab tour, we moved to a classroom on the upper floors for a series of team activities. The first one was just to split everyone up: we had to organise ourselves by birth date, first by year, then month, then day, before being divided into groups of six.</p>
+      <p>Then came a set of competitive team games. Each group picked a representative to go head-to-head against another team. One round showed dishes from different cuisines on a screen, the instructor called out a country, and the two representatives raced to point at the correct dish. Other rounds involved matching professions with objects and similar fast-reaction challenges.</p>
+      <p>The second major activity was a team challenge, with each group given a different problem. One group was asked to build the worst possible team, not using famous people, but inventing a group with clashing personalities and opposite working styles, then analysing the problems that would arise and brainstorming ways to improve cooperation and communication.</p>
+      <div class="quote"><p>"The same criminal case study was handed to every group, but it never said who was actually guilty. Some instantly blamed the store owner for insurance money, others the cashier. It showed how fast we all jump to conclusions on the same evidence."</p></div>
+      <p>That final exercise was the most thought-provoking: the case deliberately left the culprit unnamed, yet almost everyone formed a firm conclusion anyway. The point was to show how differently people interpret identical information, and how quickly assumptions get made even without enough evidence. The activities wrapped up around 12:30, and then it was time for lunch.</p>
+    </div>
+
+    <p class="section-label">Street Art City Tour</p>
+    <div class="body-text">
+      <p>The afternoon tour through Leeuwarden's city centre turned out to be the biggest surprise of the week. The city is essentially an open-air gallery, with massive murals on every other wall, and tiny hidden figures tucked into the brickwork if you look closely enough.</p>
+    </div>
+
+    <div class="photo-row two">
+      <div class="photo-slot tall">
+        <img src="images/day3-mural1.jpeg" alt="Loretta Lizzio mural, woman in historical dress"/>
+      </div>
+      <div class="photo-slot tall">
+        <img src="images/day3-mural2.jpeg" alt="Tulip mural on building wall"/>
+      </div>
+    </div>
+
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="images/day3-church1.jpeg" alt="Gothic church tower in Leeuwarden city centre"/>
+      </div>
+      <div class="photo-slot">
+        <img src="images/day3-mini1.jpeg" alt="Tiny miniature deer figures hidden in the brick wall"/>
+      </div>
+    </div>
+
+    <div class="photo-row three">
+      <div class="photo-slot">
+        <img src="images/day3-mini2.jpeg" alt="Miniature figures on the city wall"/>
+      </div>
+      <div class="photo-slot">
+        <img src="images/day3-mini3.jpeg" alt="More miniature figures on the brickwork"/>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">AI Lab</span>
+      <span class="tag">Computer Vision</span>
+      <span class="tag">Team Workshop</span>
+      <span class="tag">Street Art</span>
+      <span class="tag">City Tour</span>
+      <span class="tag">Miniatures</span>
+    </div>
+    <div class="day-nav">
+      <button class="nav-btn" data-goto="1">← Day 2</button>
+      <button class="nav-btn next" data-goto="3">Day 4 →</button>
+    </div>
+  </div>
+
+  <!-- ── DAY 4 ── -->
+  <div class="day-panel" id="p3">
+    <p class="day-kicker">Thursday · 12 March 2026</p>
+    <h2 class="day-heading">Cybersecurity <em>& Berlin</em></h2>
+    <p class="day-sub">A morning on risk management, the Odido hack, and a cross-border disaster project with NHL Stenden and HWR Berlin.</p>
+
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="/images/day4-swiss2.jpeg" alt="Swiss Cheese Model workshop"/>
+      </div>
+      <div class="photo-slot">
+        <img src="/images/day4-swiss1.jpeg" alt="Lecturer explaining the Odido hack"/>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>We started the morning of day 4 with our visit to the university. The first lecture we had was by two representatives of the cybersafety research group of NHL Stenden. We had discussions about risk management in a company, how a cyber attacker's mind works, why people without awareness training make so many human mistakes, and what the biggest weakness in a company is, which is humans. We had a lecture for about 1.5 hours, and once we were done, we continued with a small workshop.</p>
+      <p>The whole classroom was filled with software developers, business IT students, and us as cybersecurity students. They split us into 2 balanced groups, where one of the lecturers gave us an assignment to apply the Swiss cheese model on a specific hack that we chose: the ODIDO hack. ODIDO is a mobile phone company, just like Proximus. Apparently, in February there was a huge data breach affecting 6.5 million people's data. This happened because of a phishing attack: an attacker emailed an employee claiming they needed to do maintenance and therefore needed access to the system. The system was set up with multi-factor authentication. The employee, who lacked security awareness training, simply gave all the access, including the password and keys, to the attacker, who was pretending to be part of an IT audit.</p>
+      <p>The employee was just a random staff member, not an administrator or anything, yet had access to a system that only admins should have access to. Moreover, once the attacker got the data they needed, they demanded a ransom for it. For our task on the Swiss cheese model, we decided that security awareness training was the core component in this case. We then continued by adding data retention and minimization policies to reduce the attack surface, and role assignments to employees, since not every employee should have admin access. Since we were the only cybersecurity students in the group, we contributed a lot and shared our knowledge, which was our goal. After this, we had a quick lunch break.</p>
+      <p>When we went back to the classroom, we had the main finishing project to do at the end of the day. The point of this project was to choose a disaster that might happen in suburban cities, towns, or villages, and figure out how we would detect and mitigate it as fast as possible using existing patterns, tools, and AI. We started off by forming teams with NHL Stenden students and students in Berlin, which made us very diverse, ready to learn from each other and communicate.</p>
+      <p>We had two and a half hours to choose a disaster like a tsunami, set up a detection system, and use already existing resources such as weather apps and satellites. The security part was mostly about networks and connections, like switching protocols from HTTP to QUIC and making sure sniffing and altering network traffic wasn't possible. Once we finished, we reunited with the other groups and started presenting, which went well and was received positively.</p>
+      <p>At the end of the day, we said our thank yous and goodbyes and appreciated the opportunity we had to learn so much, both general and specific, in the computer science field.</p>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Cybersecurity</span>
+      <span class="tag">Swiss Cheese Model</span>
+      <span class="tag">Odido Hack</span>
+      <span class="tag">Risk Management</span>
+      <span class="tag">AIDeRS</span>
+      <span class="tag">HWR Berlin</span>
+    </div>
+    <div class="day-nav">
+      <button class="nav-btn" data-goto="2">← Day 3</button>
+      <button class="nav-btn next" data-goto="4">Day 5 →</button>
+    </div>
+  </div>
+
+  <!-- ── DAY 5 ── -->
+  <div class="day-panel" id="p4">
+    <p class="day-kicker">Friday · 13 March 2026</p>
+    <h2 class="day-heading">The Yellow Train <em>Home</em></h2>
+    <p class="day-sub">Checkout, a last morning along the canals, and the long train back to Bruges.</p>
+
+    <div class="photo-row two">
+      <div class="photo-slot">
+        <img src="images/day5-canal.jpg" alt="Leeuwarden canals on the morning of departure"/>
+      </div>
+      <div class="photo-slot empty">
+        <span class="cam">📷</span>
+        <span class="slot-name">Train station<br>(add photo)</span>
+      </div>
+    </div>
+
+    <div class="body-text">
+      <p>Friday was bittersweet. After checking out, we spent a last morning by the canals, old sailing ships moored along the waterfront, the city quiet and grey in the March light. Then the train station, the yellow NS carriages, and the long ride south.</p>
+      <div class="quote"><p>"Five days that started with a map search and ended with a city we genuinely didn't want to leave. Would we go back? Without question."</p></div>
+      <p>The ride back to Bruges gave us time to reflect on everything: the lectures, the people, the ideas, and a city that surprised us at every turn.</p>
+    </div>
+
+    <p class="section-label">What We Took Home</p>
+    <div class="event-list">
+      <div class="event-item">
+        <span class="event-emoji">💡</span>
+        <div>
+          <div class="event-title">Security is always layered, never a single wall</div>
+          <div class="event-desc">From passport chips to the Swiss Cheese model, where protection means overlapping defences that catch what the others miss.</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <span class="event-emoji">🤖</span>
+        <div>
+          <div class="event-title">AI is already in production, not just research</div>
+          <div class="event-desc">The Experience Centre showed real deployed systems. Computer vision is here, working, now.</div>
+        </div>
+      </div>
+      <div class="event-item">
+        <span class="event-emoji">🤝</span>
+        <div>
+          <div class="event-title">International teams think better</div>
+          <div class="event-desc">Working live with Berlin students on AIDeRS made the project sharper. Different perspectives, better outcomes.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tag-row">
+      <span class="tag">Homeward</span>
+      <span class="tag">Reflection</span>
+      <span class="tag">Leeuwarden</span>
+      <span class="tag">Exchange 2026</span>
+    </div>
+    <div class="day-nav">
+      <button class="nav-btn" data-goto="3">← Day 4</button>
+      <button class="nav-btn" disabled>End of trip 🎉</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Made with ♥ by Howest Hogeschool students, Bruges &nbsp;·&nbsp;
+  <strong>Leeuwarden Exchange 2026</strong> &nbsp;·&nbsp;
+  Hosted on Vercel
+</footer>
+
+<script>
+  const tabs   = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.day-panel');
+  function goTo(i) {
+    tabs.forEach((t,j)   => t.classList.toggle('active', i===j));
+    panels.forEach((p,j) => p.classList.toggle('active', i===j));
+    tabs[i].scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  tabs.forEach(b => b.addEventListener('click', () => goTo(+b.dataset.tab)));
+  document.querySelectorAll('[data-goto]').forEach(b => b.addEventListener('click', () => goTo(+b.dataset.goto)));
+</script>
+</body>
+</html>
